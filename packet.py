@@ -35,5 +35,5 @@ class Packet:
         pass
 
     # 调用下一层解码器
-    def NextDecoder(self, next: str):
+    def NextDecoder(self, next):
         pass

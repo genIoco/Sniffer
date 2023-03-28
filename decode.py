@@ -1,4 +1,4 @@
-from enum import Enum
+from layers.arp import DecodeARP
 from layers.layer import Layer
 from packet import Packet
 from layers.ethernet import DecodeEthernet
@@ -12,6 +12,7 @@ from layers.unknown import DecodeUnknown
 Decoder = {
     "Ethernet": DecodeEthernet,
     "IPv4": DecodeIPv4,
+    "ARP": DecodeARP,
     "TCP": DecodeTCP,
     "UDP": DecodeUDP,
     "UNKNOWN": DecodeUnknown
@@ -55,12 +56,15 @@ class PacketBuilder(Packet):
             self.application = layer
 
     # 调用下一层解码器
-    def NextDecoder(self, next: str):
+    def NextDecoder(self, next):
         d = self.last.LayerPayload()
         if len(d) == 0:
             return True
-        if next == "END":
+        # XXX 优化填充判断逻辑
+        if len(d) < 48 and int.from_bytes(d, "big") == 0:
             self.layers[0].padding = d
+            return True
+        if next == None:
             return True
         Decode(d, self, next)
 
