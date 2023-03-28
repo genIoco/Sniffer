@@ -6,15 +6,14 @@ from util.util import GetBits
 
 class Ethernet(Layer):
     '以太网帧类结构'
-    name = "Ethernet"
-    srcMAC = ""
-    dstMAC = ""
-    ethernetType = None
-    length = 0
-    padding = bytes
-
     def __init__(self) -> None:
         super().__init__()
+        self.name = "Ethernet"
+        self.srcMAC = ""
+        self.dstMAC = ""
+        self.ethernetType = None
+        self.length = 0
+        self.padding = bytes
 
     def DecodeFromBytes(self, data: bytes):
         """以太网数据包解码器"""
