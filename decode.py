@@ -64,8 +64,6 @@ class PacketBuilder(Packet):
         if len(d) < 48 and int.from_bytes(d, "big") == 0:
             self.layers[0].padding = d
             return True
-        if next == None:
-            return True
         Decode(d, self, next)
 
 
