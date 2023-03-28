@@ -1,11 +1,9 @@
-from enum import Enum, auto
-
+from enum import Enum
 
 class BaseEnum(Enum):
     @classmethod
     def _missing_(cls, value: object):
         return cls.UNKNOWN  # type: ignore
-
 
 # 以太网类型字段部分含义
 
@@ -16,17 +14,7 @@ class EthernetType(BaseEnum):
     SNMP = 0x814C
     IPv6 = 0x86DD
     LLDP = 0x86DD
-    UNKNOWN = 0
-
-
-ETHERNETTYPE = {
-    0x0800: 'IPv4',
-    0x0806: 'ARP',
-    0x814C: 'SNMP',
-    0x86DD: 'IPv6',
-    0x88CC: 'LLDP',
-}
-
+    UNKNOWN = 'UNKNOWN'
 
 class IPProtocol(BaseEnum):
     ICMPv4 = 1
@@ -36,8 +24,8 @@ class IPProtocol(BaseEnum):
     UDP = 8
     IPv6 = 41
     ICMPv6 = 58
-    UNKNOWN = 0
+    UNKNOWN = 'UNKNOWN'
 
 
 if __name__ == "__main__":
-    print(IPProtocol(-1))
+    print(IPProtocol['TCP'])
