@@ -2,7 +2,7 @@ import socket
 
 
 # 二进制流的转换
-def GetBits(data, start: int, num: int) -> int:  # type: ignore
+def GetBits(data, start: int = 0, num: int = 8) -> int:
     """获取字节中的某几位二进制数据"""
     if isinstance(data, bytes):
         length = len(data)*8
