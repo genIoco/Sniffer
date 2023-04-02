@@ -55,8 +55,8 @@ class MainWindow(QMainWindow):
     def StartInface(self):
         self.sniffer.SetIface(self.ui.ifaces.currentData())
 
-        # self.sniffer.Run()
-        self.sniffer.LoadFile("./icmp.pcapng")
+        self.sniffer.Run()
+        # self.sniffer.LoadFile("./icmp.pcapng")
         self.ui.start.setDisabled(True)
         self.ui.stop.setDisabled(False)
 
