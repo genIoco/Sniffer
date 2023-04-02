@@ -1,4 +1,5 @@
 from layers.arp import DecodeARP
+from layers.http import DecodeHTTP
 from layers.ipv6 import DecodeIPv6
 from layers.layer import Layer
 from packet import Packet
@@ -19,6 +20,7 @@ Decoder = {
     "ICMPv4": DecodeICMPv4,
     "TCP": DecodeTCP,
     "UDP": DecodeUDP,
+    "HTTP":DecodeHTTP,
     "UNKNOWN": DecodeUnknown
 }
 

@@ -54,11 +54,16 @@ class TCP(Layer):
         self.header = data[:hLen]
         self.payload = data[hLen:]
 
-    # XXX 根据端口号判断下一层协议类型，但是似乎可能会存在问题
-    # TODO上层协议的处理可能会很麻烦
-
     @property
     def NextLayerType(self):
+        # XXX上层协议判断先这样写吧,累了
+        HTTPRequest = ['GET', 'POST', 'DELETE', 'HEAD', 'LINK',
+                       'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE', 'UNLINK']
+        HTTPResponse = ['200', '301', '302', '404', '405', '500']
+        if(any(e in self.String() for e in HTTPRequest)):
+            return "HTTP"
+        if(any(e in self.String() for e in HTTPResponse)):
+            return "HTTP"
         return "UNKNOWN"
 
     @property
