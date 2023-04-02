@@ -14,6 +14,7 @@ _FLAGS = {
 
 class TCP(Layer):
     "TCP帧结构"
+    name = "tcp"
 
     def __init__(self) -> None:
         super().__init__()

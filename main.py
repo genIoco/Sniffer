@@ -66,7 +66,36 @@ class MainWindow(QMainWindow):
         self.sniffer.Stop()
 
     def SetFilter(self):
-        print("press return")
+        filter_rule = {
+            'protocol': '',
+            'ip': '',
+            'port': '0'
+        }
+        filter = self.ui.filter.text()
+        # TODO目前仅支持单条命令过滤
+        tmp = filter.split('==')
+        if len(tmp) != 1:
+            filter_rule[tmp[0].strip()] = tmp[1].strip()
+        else:
+            filter_rule['protocol'] = tmp[0].strip()
+        for row in range(len(self.packets)):
+            if tmp[0] == '':
+                self.ui.info.setRowHidden(row, False)
+                continue
+            else:
+                self.ui.info.setRowHidden(row, True)
+            packet = self.packets[row]
+            for layer in packet.layers:
+                if filter_rule['protocol'] == layer.name:
+                    self.ui.info.setRowHidden(row, False)
+                    break
+            if packet.network is not None and (filter_rule['ip'] == packet.network.srcIP or filter_rule['ip'] == packet.network.dstIP):
+                self.ui.info.setRowHidden(row, False)
+                continue
+
+            if packet.transport is not None and (int(filter_rule['port']) == packet.transport.srcPort or int(filter_rule['port']) == packet.transport.dstPort):
+                self.ui.info.setRowHidden(row, False)
+                continue
 
     def ShowIfaces(self):
         self.ifaces.GetIfaces()
@@ -84,6 +113,7 @@ class MainWindow(QMainWindow):
                 self.ui.info.setItem(row, col, QTableWidgetItem(str(text)))
             self.ui.info.resizeColumnsToContents()
             self.ui.info.scrollToBottom()
+            self.ui.info.horizontalHeader().setStretchLastSection(True)
             yield
 
     def Showdetail(self):

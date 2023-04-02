@@ -7,6 +7,7 @@ from util.util import GetBits, InetNtop
 
 class ARP(Layer):
     'ARP帧结构'
+    name = 'arp'
 
     def __init__(self) -> None:
         super().__init__()

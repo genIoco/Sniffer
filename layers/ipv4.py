@@ -6,10 +6,10 @@ from layers.enums import IPProtocol
 
 class IPv4(Layer):
     'IPv4帧结构'
+    name = 'ip'
 
     def __init__(self) -> None:
         super().__init__()
-        self.name = 'IPv4'
         self.version = 4
         self.hlength = 5
         self.tos = 0

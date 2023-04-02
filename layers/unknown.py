@@ -4,6 +4,7 @@ from layers.layer import Layer
 
 class Unknown(Layer):
     '未识别数据帧类型'
+    name = 'unknown'
 
     def __init__(self) -> None:
         super().__init__()
@@ -21,7 +22,7 @@ class Unknown(Layer):
             f"Data ({len(self.header)} bytes)",
             [
                 f"Data: {self.header.hex()}",
-                f"[Length: {len(self.header)}]"        
+                f"[Length: {len(self.header)}]"
             ]
         ]
 

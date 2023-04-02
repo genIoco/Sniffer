@@ -6,6 +6,7 @@ from util.util import GetBits
 
 class ICMPv4(Layer):
     "ICMPv4帧结构"
+    name = "icmp"
 
     def __init__(self) -> None:
         super().__init__()

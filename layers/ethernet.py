@@ -6,10 +6,10 @@ from util.util import GetBits
 
 class Ethernet(Layer):
     '以太网帧类结构'
+    name = "ethernet"
 
     def __init__(self) -> None:
         super().__init__()
-        self.name = "Ethernet"
         self.srcMAC = ""
         self.dstMAC = ""
         self.ethernetType = 0

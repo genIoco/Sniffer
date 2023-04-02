@@ -4,6 +4,7 @@ from packet import Packet
 
 class UDP(Layer):
     'UDP帧结构'
+    name = 'udp'
 
     def DecodeFromBytes(self, data: bytes):
         self.srcPort = int.from_bytes(data[0:2], "big")
