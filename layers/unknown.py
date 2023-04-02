@@ -11,6 +11,21 @@ class Unknown(Layer):
     def DecodeFromBytes(self, data: bytes):
         return super().DecodeFromBytes(data)
 
+    @property
+    def Info(self):
+        return "未知帧格式"
+
+    @property
+    def Detail(self):
+        return [
+            f"Data ({len(self.header)} bytes)",
+            [
+                f"Data: {self.header.hex()}",
+                f"[Length: {len(self.header)}]"        
+            ]
+        ]
+
+
 def DecodeUnknown(data: bytes, packet: Packet):
     unknown = Unknown()
     unknown.DecodeFromBytes(data)

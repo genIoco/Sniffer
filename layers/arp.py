@@ -1,4 +1,5 @@
 import socket
+from layers.enums import ARPType
 from layers.layer import Layer
 from packet import Packet
 from util.util import GetBits, InetNtop
@@ -32,6 +33,33 @@ class ARP(Layer):
         self.dstIP = InetNtop(socket.AF_INET, data[24:28])
         self.header = data[:28]
         self.payload = data[28:]
+
+    @property
+    def Info(self):
+        info = ""
+        if ARPType(self.op).name == 'request':
+            info += "Who has %s? Tell %s" % (self.srcIP, self.dstIP)
+        elif ARPType(self.op).name == 2:
+            info += "%s is at %s" % (self.srcIP, self.srcMAC)
+        return info
+
+    @property
+    def Detail(self):
+        return [
+            f"Address Resolution Protocol ({ARPType(self.op).name})",
+            [
+                # TODOARP具体协议类型
+                f"Hardware type: Ethernet (1)",
+                f"Protocol type: IPv4 (0x0800)",
+                f"Hardware size: {self.hardwareLenght}",
+                f"Protocol size: {self.protocolLenght}",
+                f"Opcode: request(1)",
+                f"Sender MAC address: {self.srcMAC}",
+                f"Sender IP address: {self.srcIP}",
+                f"Target MAC address: {self.dstMAC}",
+                f"Target IP address: {self.dstIP}"
+            ]
+        ]
 
 
 def DecodeARP(data: bytes, packet: Packet):

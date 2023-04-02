@@ -12,7 +12,7 @@ class Ethernet(Layer):
         self.name = "Ethernet"
         self.srcMAC = ""
         self.dstMAC = ""
-        self.ethernetType = None
+        self.ethernetType = 0
         self.length = 0
         self.padding = None
 
@@ -28,6 +28,21 @@ class Ethernet(Layer):
     @property
     def NextLayerType(self) -> str:
         return EthernetType(self.ethernetType).name
+
+    @property
+    def Info(self):
+        return self.NextLayerType
+
+    @property
+    def Detail(self):
+        return [
+            f"Ethernet II, Src: {self.srcMAC}, Dst: {self.dstMAC}",
+            [
+                f"Destination: {self.dstMAC}",
+                f"Source: {self.srcMAC}",
+                f"Type: {self.NextLayerType}({'0x{:0>4x}'.format(self.ethernetType).zfill(4)})"
+            ]
+        ]
 
 
 def DecodeEthernet(data: bytes, packet: Packet):

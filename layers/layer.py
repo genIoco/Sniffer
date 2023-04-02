@@ -13,4 +13,12 @@ class Layer(BaseLayer):
     # 获得下一层类型，默认为UNKNOWN
     @property
     def NextLayerType(self):
-        return "UNKNOWN"
+        return ""
+
+    @property
+    def Info(self):
+        return ""
+    
+    @property
+    def Detail(self):
+        return ""

@@ -3,14 +3,6 @@ from packet import Packet
 from util.util import *
 from layers.enums import IPProtocol
 
-# TODO 标记字段是否需要解析到帧结构中
-URG = 0x20
-ACK = 0x10
-PSH = 0x08
-RST = 0x04
-SYN = 0x02
-FIN = 0x01
-
 
 class IPv4(Layer):
     'IPv4帧结构'
@@ -20,16 +12,16 @@ class IPv4(Layer):
         self.name = 'IPv4'
         self.version = 4
         self.hlength = 5
-        self.tos = None
+        self.tos = 0
         self.length = None
-        self.id = None
-        self.flags = None
-        self.fragoffset = None
+        self.id = 0
+        self.flags = 0
+        self.fragoffset = 0
         self.ttl = None
         self.protocol = None
-        self.checksum = None
+        self.checksum = 0
         self.srcIP = None
-        self.dsrIP = None
+        self.dstIP = None
         self.options = None
 
     # IP数据包解码器
@@ -45,7 +37,7 @@ class IPv4(Layer):
         self.protocol = data[9]
         self.checksum = GetBits(data[10:12], 0, 16)
         self.srcIP = InetNtop(socket.AF_INET, data[12:16])
-        self.dsrIP = InetNtop(socket.AF_INET, data[16:20])
+        self.dstIP = InetNtop(socket.AF_INET, data[16:20])
         hLen = 4 * int(self.hlength)
         if (hLen - 20) > 0:
             self.options = data[20:hLen]
@@ -57,6 +49,45 @@ class IPv4(Layer):
     @property
     def NextLayerType(self):
         return IPProtocol(self.protocol).name
+
+    @property
+    def Info(self):
+        return self.NextLayerType + f"({self.protocol})"
+
+    @property
+    def Detail(self):
+        return [
+            f"Internet Protocol Version 4, Src: {self.srcIP}, Dst: {self.dstIP}",
+            [
+
+                f"{hex(self.version)[2:].zfill(4)} .... = Version: {self.version}",
+                f".... {hex(self.hlength)[2:].zfill(4)} = Header Length: {self.hlength*4} bytes ({self.hlength})",
+                # TODO ipv4的TOS字段具体含义解析
+                [
+                    f"Differentiated Services Field: {'0x{:0>2x}'.format(self.tos)} (DSCP: CS0, ECN: Not-ECT)",
+                    [
+                        f"{'0x{:0>2x}'.format(self.tos>>4)} {'0x{:0>2x}'.format((self.tos>>2)&0x3)}.. = Differentiated Services Codepoint: Default ({self.tos>>2})",
+                        f".... ..{'0x{:0>2x}'.format(self.tos&0x3)} = Explicit Congestion Notification: Not ECN-Capable Transport ({self.tos&0x3})"
+                    ]
+                ],
+                f"Total Length: {self.length}",
+                f"Identification: {hex(self.id)} ({self.id})",
+                [
+                    f"{hex(self.flags)[2:].zfill(3)}. .... = Flags: {hex(self.flags)}, Don't fragment",
+                    [
+                        f"{self.flags>>2}... .... = Reserved bit: {'S' if self.flags>>2 else 'Not s'}et",
+                        f".{self.flags>>1&1}.. .... = Don't fragment: {'S' if self.flags>>1&1 else 'Not s'}et",
+                        f"..{self.flags>>2&1}. .... = More fragments: {'S' if self.flags>>2&1 else 'Not s'}et"
+                    ]
+                ],
+                f"...0 0000 0000 0000 = Fragment Offset: 0",
+                f"Time to Live: {self.ttl}",
+                f"Protocol: {self.NextLayerType} ({self.protocol})",
+                f"Header Checksum: {'0x{:0>4x}'.format(self.checksum).zfill(0)}",
+                f"Source Address: {self.srcIP}",
+                f"Destination Address: {self.dstIP}",
+            ],
+        ]
 
 
 def DecodeIPv4(data: bytes, packet: Packet):
