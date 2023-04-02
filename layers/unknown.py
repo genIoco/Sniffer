@@ -30,4 +30,7 @@ class Unknown(Layer):
 def DecodeUnknown(data: bytes, packet: Packet):
     unknown = Unknown()
     unknown.DecodeFromBytes(data)
-    packet.AddLayer(unknown)
+    
+    # packet.AddLayer(unknown)
+    # 如果需要打印未解析的上层数据包,请取消注释上一条代码,同时注释下一条代码
+    packet.layers.append(unknown)
